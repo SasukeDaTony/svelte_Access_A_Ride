@@ -60,7 +60,6 @@
         <div>
             <p>Don't have an account?</p>
             <p on:click={handleRegister} on:keydown={() => {}}>Register</p>
-          
         </div>
         {/if}
     </div>

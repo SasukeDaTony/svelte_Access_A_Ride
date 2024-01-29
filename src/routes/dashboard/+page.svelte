@@ -14,6 +14,22 @@
         todoList=[...todoList, currTodo]
         currTodo = '';
     }
+
+function editTodo(index) {
+    let newTodoList = todoList.filter((val, i) => {
+        return i !==index;
+    })
+    currTodo = todoList[index];
+    todoList = newTodoList;
+}
+
+function removeTodo(index) {
+    let newTodoList = todoList.filter((val, i) => {
+        return i !==index;
+    })
+    todoList = newTodoList;
+}
+
 </script>
 
 
@@ -22,14 +38,23 @@
 
 <div class="mainContainer">
     <div class="headerContainer">
-        <h1>To Do List</h1>
+        <h1>Task Manager</h1>
         <button><i class="fa-regular fa-floppy-disk"></i>Save</button>
     </div>
     <main>
+        {#if todoList.length === 0} 
+        <p>You Have No Tasks Yet!</p>
+        {/if}
         {#each todoList as todo, index}
             {#if todo !== ''}
             <div class="todo">
-                {index + 1}. {todo}
+                <p>
+                    {index + 1}. {todo}
+                </p>
+                <div class="actions">
+                    <i role="button" tabindex="0" class="fa-regular fa-pen-to-square" on:click={() => {editTodo(index)}} on:keydown={() => {}}><span class="square">Edit</span></i>
+                    <i role="button" tabindex="0" class="fa-regular fa-trash-can" on:click={() => {removeTodo(index)}} on:keydown={() => {}}><span class="square">Delete</span></i>
+                </div>
             </div>
             {/if}
           
@@ -71,6 +96,9 @@
         align-items: center;
         justify-content: space-between;
     }
+    .headerContainer h1 {
+        border-bottom: 1px solid white;
+    }
 
     .headerContainer button {
         background:#003c5b;
@@ -98,6 +126,36 @@
         flex-direction: column;
         gap: 8px;
         flex: 1;
+    }
+
+    .todo {
+        border-left: 1px solid cyan;
+        padding: 4px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .fa-pen-to-square:hover  {
+        color:#0891b2;
+        cursor:pointer;
+    }
+
+    .square {
+        transition-duration: 0ms;
+        padding: 5px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    .fa-trash-can:hover {
+        color:rgba(255, 0, 0, 0.609);
+        cursor:pointer;
     }
 
     .enterTodo {
