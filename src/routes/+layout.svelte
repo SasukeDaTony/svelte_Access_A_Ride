@@ -1,9 +1,9 @@
-<div class='mainContainer'>
+<div class='layoutContainer'>
     <slot />
 </div>
 
 <style>
-    .mainContainer {
+    .layoutContainer {
         min-height:100vh;
         background:linear-gradient(to right, #000428, #000046);
         color:white;
