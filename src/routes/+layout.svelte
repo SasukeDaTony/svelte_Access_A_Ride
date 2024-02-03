@@ -12,7 +12,6 @@
 
   onMount(() => {
     console.log("Mounting");
-
     unsubscribe = auth.onAuthStateChanged(async (user) => {
       const currentPath = window.location.pathname;
 
@@ -53,18 +52,20 @@
           ...curr,
           user,
           data: userDataForStore,
-          loading: true,
+          loading: false
         };
       });
     });
   });
 
-  onDestroy(() => {
-    console.log("Unmounting");
-    if (unsubscribe) {
-      unsubscribe(); // Invoke the unsubscribe function when the component is being unmounted
-    }
-  });
+  // onDestroy(() => {
+   
+  //   if (unsubscribe) {
+     
+  //     unsubscribe(); // Invoke the unsubscribe function when the component is being unmounted
+  //   }
+  
+  // });
 </script>
 
 <!-- <script>
