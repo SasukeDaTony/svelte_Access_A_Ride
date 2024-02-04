@@ -1,9 +1,15 @@
 <!-- Javscript -->
 <script>
-  import { authHandlers } from "../../store/store";
+  import { authHandlers, authStore } from "../../store/store";
+  import { getDoc, doc, setDoc } from "firebase/firestore";
+  import { auth, db } from "../../lib-firebase/firebase";
   let todoList = [];
   let currTodo = "";
   let error = false;
+
+  authStore.subscribe((curr) => {
+    todoList = curr.data.todos;
+  });
 
   function addTodo() {
     error = false;
@@ -29,63 +35,84 @@
     });
     todoList = newTodoList;
   }
+
+  async function saveTodos() {
+    try {
+      const userRef = doc(db, "users", $authStore.user.uid);
+      await setDoc(
+        userRef,
+        {
+          todos: todoList,
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      console.log("Error! Failed To Save");
+    }
+  }
 </script>
 
 <!-- HTML -->
 
-<div class="mainContainer">
-  <div class="headerContainer">
-    <h1>Task Manager</h1>
-    <div class="headerButtons">
-      <button><i class="fa-regular fa-floppy-disk"></i>Save</button>
-      <button on:click={authHandlers.logout}
-        ><i class="fa-solid fa-door-open"></i>Log Out</button
-      >
+{#if !$authStore.loading}
+  <div class="mainContainer">
+    <div class="headerContainer">
+      <h1>Task Manager</h1>
+      <div class="headerButtons">
+        <button on:click={saveTodos}
+          ><i class="fa-regular fa-floppy-disk"></i>Save</button
+        >
+        <button on:click={authHandlers.logout}
+          ><i class="fa-solid fa-door-open"></i>Log Out</button
+        >
+      </div>
+    </div>
+    <main>
+      {#if todoList.length === 0}
+        <p>You Have No Tasks Yet!</p>
+      {/if}
+      {#each todoList as todo, index}
+        {#if todo !== ""}
+          <div class="todo">
+            <p>
+              {index + 1}. {todo}
+            </p>
+            <div class="actions">
+              <i
+                role="button"
+                tabindex="0"
+                class="fa-regular fa-pen-to-square"
+                on:click={() => {
+                  editTodo(index);
+                }}
+                on:keydown={() => {}}><span class="square">Edit</span></i
+              >
+              <i
+                role="button"
+                tabindex="0"
+                class="fa-regular fa-trash-can"
+                on:click={() => {
+                  removeTodo(index);
+                }}
+                on:keydown={() => {}}><span class="square">Delete</span></i
+              >
+            </div>
+          </div>
+        {/if}
+      {/each}
+    </main>
+    <div class={"enterTodo " + (error ? "errorBorder" : "")}>
+      <input
+        bind:value={currTodo}
+        type="text"
+        placeholder={error
+          ? "Please Write A Task First"
+          : "Write Your Task Here"}
+      />
+      <button on:click={addTodo}>Add Task</button>
     </div>
   </div>
-  <main>
-    {#if todoList.length === 0}
-      <p>You Have No Tasks Yet!</p>
-    {/if}
-    {#each todoList as todo, index}
-      {#if todo !== ""}
-        <div class="todo">
-          <p>
-            {index + 1}. {todo}
-          </p>
-          <div class="actions">
-            <i
-              role="button"
-              tabindex="0"
-              class="fa-regular fa-pen-to-square"
-              on:click={() => {
-                editTodo(index);
-              }}
-              on:keydown={() => {}}><span class="square">Edit</span></i
-            >
-            <i
-              role="button"
-              tabindex="0"
-              class="fa-regular fa-trash-can"
-              on:click={() => {
-                removeTodo(index);
-              }}
-              on:keydown={() => {}}><span class="square">Delete</span></i
-            >
-          </div>
-        </div>
-      {/if}
-    {/each}
-  </main>
-  <div class={"enterTodo " + (error ? "errorBorder" : "")}>
-    <input
-      bind:value={currTodo}
-      type="text"
-      placeholder={error ? "Please Write A Task First" : "Write Your Task Here"}
-    />
-    <button on:click={addTodo}>Add Task</button>
-  </div>
-</div>
+{/if}
 
 <!-- CSS -->
 
@@ -158,7 +185,7 @@
   }
 
   .fa-pen-to-square:hover {
-    color: #0891b2;
+    color: #d3c722;
     cursor: pointer;
   }
 
@@ -169,7 +196,7 @@
   }
 
   .fa-trash-can:hover {
-    color: rgba(255, 0, 0, 0.609);
+    color: rgba(226, 28, 28, 0.934);
     cursor: pointer;
   }
 

@@ -11,14 +11,20 @@
   let authentication = false;
 
   async function handleAuthenticate() {
+
     if (authentication) {
       return;
     }
+// checks register email and password validity before requesting auth. from firebase
     if (!email || !password || (register && !confirmPassword)) {
+      authentication= false;
       error = true;
       return;
     }
+// if auth. process request true then make authentication var true for spinner
     authentication = true;
+
+    // register for log in or for registering new user on auth & return error otherwise
     try {
       if (!register) {
         await authHandlers.login(email, password);
@@ -28,8 +34,11 @@
     } catch (err) {
       console.log("Authentication error HTTP 401 Failed Authorization", err);
       error = true;
+      authentication=false;
     }
   }
+
+
 
   function handleRegister() {
     register = !register;
@@ -70,9 +79,9 @@
         />
       </label>
     {/if}
-    <button on:click={handleAuthenticate} type="button">
+    <button on:click={handleAuthenticate} type="submit">
       {#if authentication}
-        <i class="fa-solid fa-spinner"></i>
+        <i class="fa-solid fa-spinner spin"></i>
       {:else}
         {register ? "Register" : "Log In"}
       {/if}
@@ -93,6 +102,10 @@
     {/if}
   </div>
 </div>
+
+
+
+
 
 <!-- CSS -->
 
@@ -172,11 +185,11 @@
     place-items: center;
   }
 
-  .fa-spinner {
-    animation: spin 2s infinite;
+  .spin {
+    animation: spin 1s linear infinite;
   }
 
-  @keyframes fa-spinner {
+  @keyframes spin {
     from {
       transform: rotate(0deg);
     }

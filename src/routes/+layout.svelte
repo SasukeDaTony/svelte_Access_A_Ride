@@ -19,27 +19,34 @@
         window.location.href = "/";
         return;
       }
-      if (user && currentPath === "/") {
-        window.location.href = "/dashboard";
-        return;
-      }
 
       if (!user) {
         return;
       }
 
+      if (user && currentPath === "/") {
+        console.log("creating user");
+        window.location.href = "/dashboard";
+        return;
+      }
+
+      // var assign for userData from firestore
       let userDataForStore;
+
       // pull from firestore
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
-      // set user if doesnt exist
+
       if (!docSnap.exists()) {
-        const userRef = doc(db, "user", user.uid);
-        // set userObject data
+        // set user if doesnt exist
+        const userRef = doc(db, "users", user.uid);
+
+        // set userObject data with assigned var userData
         userDataForStore = {
           email: user.email,
           todos: [],
         };
+
         await setDoc(userRef, userDataForStore, { merge: true });
       } else {
         // if user exists pull data for user from store
@@ -52,19 +59,19 @@
           ...curr,
           user,
           data: userDataForStore,
-          loading: false
+          loading: false,
         };
       });
     });
   });
 
   // onDestroy(() => {
-   
+
   //   if (unsubscribe) {
-     
+
   //     unsubscribe(); // Invoke the unsubscribe function when the component is being unmounted
   //   }
-  
+
   // });
 </script>
 
