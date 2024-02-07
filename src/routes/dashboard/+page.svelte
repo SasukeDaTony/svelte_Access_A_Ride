@@ -4,6 +4,7 @@
   import { getDoc, doc, setDoc } from "firebase/firestore";
   import { auth, db } from "../../lib-firebase/firebase";
   import TodoItem from "../../components/TodoItem.svelte";
+
   let todoList = [];
   let currTodo = "";
   let error = false;
