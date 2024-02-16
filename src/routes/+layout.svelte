@@ -5,6 +5,7 @@
   import { auth, db } from "../lib-firebase/firebase";
   import { getDoc, doc, setDoc } from "firebase/firestore";
   import { authStore } from "../store/store";
+  import "../app.css";
 
   const nonAuthRoutes = ["/", "product"];
 
@@ -14,6 +15,7 @@
     unsubscribe = auth.onAuthStateChanged(async (user) => {
       const currentPath = window.location.pathname;
 
+      // if user doesn't exist or we are on unauthorize route, take us back to log in
       if (!user && !nonAuthRoutes.includes(currentPath)) {
         window.location.href = "/";
         return;
@@ -23,8 +25,8 @@
         return;
       }
 
+      // if user exists and we are at login then change location to dashboard
       if (user && currentPath === "/") {
-        console.log("creating user");
         window.location.href = "/dashboard";
         return;
       }
@@ -66,14 +68,11 @@
     });
   });
 
-  // onDestroy(() => {
-
-  //   if (unsubscribe) {
-
-  //     unsubscribe(); // Invoke the unsubscribe function when the component is being unmounted
-  //   }
-
-  // });
+  onDestroy(() => {
+    if (unsubscribe) {
+      unsubscribe(); // Invoke the unsubscribe function when the component is being unmounted
+    }
+  });
 </script>
 
 <!-- HTML -->

@@ -5,6 +5,7 @@
   export let removeTodo;
 </script>
 
+<!-- HTML -->
 <div class="todo">
   <p>
     {index + 1}. {todo}
@@ -31,6 +32,7 @@
   </div>
 </div>
 
+<!-- CSS -->
 <style>
   .todo {
     border-left: 1px solid cyan;
